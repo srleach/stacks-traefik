@@ -1,0 +1,48 @@
+version: "3.3"
+networks:
+  vlan-containers:
+    external: true
+  traefik_internal:
+    external: true
+services:
+  traefik:
+    image: "traefik:v3.4.1"
+    container_name: "traefik"
+    networks:
+      vlan-containers:
+        ipv4_address: 192.168.26.140
+      traefik_internal:
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+    labels:
+      - "traefik.enable=true"
+      # Router for dashboard
+      - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.home.sea.nlea.ch`)"
+      - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+      - "traefik.http.routers.traefik-dashboard.tls=true"
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=route53resolver"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.directory=/hostconfig/"
+      - "--providers.file.watch=true"
+      - "--entryPoints.web.address=192.168.26.140:80"
+      - "--entryPoints.websecure.address=192.168.26.140:443"
+      - "--certificatesResolvers.route53resolver.acme.email=sean.leachy@gmail.com"
+      - "--certificatesResolvers.route53resolver.acme.storage=/hostconfig/acme.json"
+      - "--certificatesResolvers.route53resolver.acme.dnsChallenge.provider=route53"
+      - "--certificatesResolvers.route53resolver.acme.dnsChallenge.delayBeforeCheck=0"
+      - "--log.level=WARN"
+
+    # ports:
+    #  - "80:80"
+    #  - "443:443"
+    #  - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./hostconfig:/hostconfig"
+      - "./logs:/var/log"
