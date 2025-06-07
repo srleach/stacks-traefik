@@ -32,16 +32,14 @@ services:
       - "--providers.file.watch=true"
       - "--entryPoints.web.address=192.168.26.140:80"
       - "--entryPoints.websecure.address=192.168.26.140:443"
+      - "--entryPoints.websecure.transport.respondingTimeouts.readTimeout=600s"
+      - "--entryPoints.websecure.transport.respondingTimeouts.idleTimeout=600s"
+      - "--entryPoints.websecure.transport.respondingTimeouts.writeTimeout=600s"
       - "--certificatesResolvers.route53resolver.acme.email=sean.leachy@gmail.com"
       - "--certificatesResolvers.route53resolver.acme.storage=/hostconfig/acme.json"
       - "--certificatesResolvers.route53resolver.acme.dnsChallenge.provider=route53"
       - "--certificatesResolvers.route53resolver.acme.dnsChallenge.delayBeforeCheck=0"
       - "--log.level=WARN"
-
-    # ports:
-    #  - "80:80"
-    #  - "443:443"
-    #  - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "/volume3/docker/traefik/hostconfig:/hostconfig"
