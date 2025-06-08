@@ -26,8 +26,10 @@ services:
       - "traefik.http.routers.traefik-dashboard.tls.certresolver=route53resolver"
     command:
       - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
+      # - "--providers.docker=true"
+      # - "--providers.docker.exposedbydefault=false"
+      - "--providers.swarm=true"
+      - "--providers.swarm.endpoint=127.0.0.1:2377"
       - "--providers.file.directory=/hostconfig/"
       - "--providers.file.watch=true"
       - "--entryPoints.web.address=192.168.26.140:80"
