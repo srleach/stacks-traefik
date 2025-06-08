@@ -26,8 +26,8 @@ services:
       - "traefik.http.routers.traefik-dashboard.tls.certresolver=route53resolver"
     command:
       - "--api.insecure=true"
-      # - "--providers.docker=true"
-      # - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
       - "--providers.swarm=true"
       - "--providers.swarm.endpoint=unix:///var/run/docker.sock"
       - "--providers.file.directory=/hostconfig/"
